@@ -1,5 +1,5 @@
 from typing import Dict, Union, Set, Any, List
-
+import re
 
 def get_type_annotation(obj: Any) -> str:
     """
@@ -26,6 +26,9 @@ def get_type_annotation(obj: Any) -> str:
             result += f"List[Union[{", ".join(set_types)}]]"
         else:
             result += f"List[{set_types.pop() if set_types else "Any"}]"
-    else:
+    elif obj:
         return str(type(obj).__name__)
+    else:
+        return "None"
+    result = re.sub(r"\bNone,\b|, None\b|(None,?|\sNone\s)", "", result)
     return result
