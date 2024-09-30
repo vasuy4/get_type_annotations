@@ -12,19 +12,22 @@ def get_type_annotation(obj: Any) -> str:
     if type(obj) is dict:
         set_types_keyes: Set[str] = {get_type_annotation(k) for k in obj.keys()}
         set_types_values: Set[str] = {get_type_annotation(v) for v in obj.values()}
-        if len(set_types_keyes) > 1:
+        len_keys: int = len(set_types_keyes)
+        len_values: int = len(set_types_values)
+        if len_keys > 1:
             result += f"Dict[Union[{", ".join(set_types_keyes)}], "
-        else:
+        elif len_keys == 1:
             result += f"Dict[{set_types_keyes.pop()}, "
-        if len(set_types_values) > 1:
+        if len_values > 1:
             result += f"Union[{", ".join(set_types_values)}]]"
-        else:
+        elif len_values == 1:
             result += f"{set_types_values.pop()}]"
     elif type(obj) is list:
         set_types: Set[str] = {get_type_annotation(v) for v in obj}
-        if len(set_types) > 1:
+        len_set: int = len(set_types)
+        if len_set > 1:
             result += f"List[Union[{", ".join(set_types)}]]"
-        else:
+        elif len_set == 1:
             result += f"List[{set_types.pop()}]"
     else:
         return str(type(obj).__name__)
